@@ -1,13 +1,13 @@
 package org.pitang.gerencia_carros.service;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 
 import org.pitang.gerencia_carros.model.UsuarioModel;
 import org.pitang.gerencia_carros.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.transaction.Transactional;
 
@@ -47,7 +47,7 @@ public class UsuarioService {
     }
     
     //public void salvarFoto(Integer id, byte[] foto) {
-    @Transactional
+    /*@Transactional
     public void salvarFoto(Integer id, MultipartFile foto) throws IOException {
         Optional<UsuarioModel> optionalUsuario = usuarioRepository.findById(id);
         byte[] bytes = foto.getBytes();
@@ -58,7 +58,21 @@ public class UsuarioService {
             //usuarioRepository.save(usuario);
             usuarioRepository.updateFoto(id, bytes);
         });
+    }*/
+    @Transactional
+    public void salvarFoto(Integer id, InputStream fotoStream) {
+        Optional<UsuarioModel> optionalUsuario = usuarioRepository.findById(id);
+        optionalUsuario.ifPresent(usuario -> {
+            try {
+                usuario.setFoto(fotoStream.readAllBytes());
+                usuarioRepository.save(usuario);
+            } catch (IOException e) {
+                e.printStackTrace();
+                // Handle exception appropriately
+            }
+        });
     }
+
 
     public byte[] recuperarFoto(Integer id) {
         Optional<UsuarioModel> optionalUsuario = usuarioRepository.findById(id);

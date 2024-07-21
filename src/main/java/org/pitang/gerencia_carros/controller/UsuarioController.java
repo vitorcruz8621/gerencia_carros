@@ -1,6 +1,8 @@
 package org.pitang.gerencia_carros.controller;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 
@@ -149,13 +151,25 @@ public class UsuarioController {
 		throw new RegisterNotFoundException();
 	}
 	
+	/*
 	@PostMapping("/{id}/foto")
     public ResponseEntity<Void> salvarFoto(@PathVariable Integer id, @RequestParam("foto") MultipartFile foto) throws IOException {
         //byte[] bytes = foto.getBytes();
 		//usuarioService.salvarFoto(id, bytes);
 		usuarioService.salvarFoto(id, foto);
 		return ResponseEntity.ok().build();
-    }
+    }*/
+	@PostMapping("/{id}/foto")
+	public ResponseEntity<Void> salvarFoto(@PathVariable Integer id, @RequestParam("foto") MultipartFile foto) {
+	    try (InputStream inputStream = foto.getInputStream()) {
+	        usuarioService.salvarFoto(id, inputStream);
+	        return ResponseEntity.ok().build();
+	    } catch (IOException e) {
+	        return ResponseEntity.badRequest().build();
+	    }
+	}
+
+    
 
     @GetMapping("/{id}/foto")
     public ResponseEntity<byte[]> recuperarFoto(@PathVariable Integer id) {
