@@ -8,11 +8,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -56,9 +56,8 @@ public class UsuarioModel implements Serializable {
 	@Column(nullable = false)
 	private String telefone;
 	
-	@Lob
-	@Column(name = "foto", columnDefinition = "bytea")
-    private byte[] foto;
-	
+	@Null
+	@Column(name = "foto_path")
+    private String fotoPath;
 	
 }

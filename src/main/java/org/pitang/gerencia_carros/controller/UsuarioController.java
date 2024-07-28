@@ -1,8 +1,6 @@
 package org.pitang.gerencia_carros.controller;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,7 +12,6 @@ import org.pitang.gerencia_carros.exceptions.model.usuario.InvalidFieldsExceptio
 import org.pitang.gerencia_carros.model.UsuarioModel;
 import org.pitang.gerencia_carros.service.UsuarioService;
 import org.pitang.gerencia_carros.utilitario.Utilitarios;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -47,27 +44,29 @@ public class UsuarioController {
 	@GetMapping
 	public ResponseEntity<List<UsuarioModel>> getAllUsuarios() throws Exception {
 		List<UsuarioModel> listaUsuarios = usuarioService.getAllUsuarios();
-		
+
 		if (!listaUsuarios.isEmpty()) {
 			return ResponseEntity.ofNullable(listaUsuarios);
 		}
-		
+
 		throw new RegisterNotFoundException();
-		//return ResponseEntity.ok(usuarioService.getAllUsuarios());
+		// return ResponseEntity.ok(usuarioService.getAllUsuarios());
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<UsuarioModel> getUsuarioById(@PathVariable Integer id) throws Exception {
 		Optional<UsuarioModel> opUsuario = usuarioService.getUsuarioById(id);
-		
+
 		if (!opUsuario.isEmpty()) {
 			return ResponseEntity.ofNullable(opUsuario.get());
 		}
-		
+
 		throw new RegisterNotFoundException();
-		
-		/*return usuarioService.getUsuarioById(id).map(entity -> ResponseEntity.ok(entity))
-				.orElse(ResponseEntity.notFound().build());*/
+
+		/*
+		 * return usuarioService.getUsuarioById(id).map(entity ->
+		 * ResponseEntity.ok(entity)) .orElse(ResponseEntity.notFound().build());
+		 */
 	}
 
 	@PostMapping
@@ -131,6 +130,7 @@ public class UsuarioController {
 
 		if (!opUsuario.isEmpty()) {
 			usuario.setId(opUsuario.get().getId());
+			usuarioService.saveUsuario(usuario);
 			return ResponseEntity.ok(usuario);
 		}
 
@@ -150,34 +150,11 @@ public class UsuarioController {
 
 		throw new RegisterNotFoundException();
 	}
-	
-	/*
-	@PostMapping("/{id}/foto")
-    public ResponseEntity<Void> salvarFoto(@PathVariable Integer id, @RequestParam("foto") MultipartFile foto) throws IOException {
-        //byte[] bytes = foto.getBytes();
-		//usuarioService.salvarFoto(id, bytes);
-		usuarioService.salvarFoto(id, foto);
-		return ResponseEntity.ok().build();
-    }*/
-	@PostMapping("/{id}/foto")
-	public ResponseEntity<Void> salvarFoto(@PathVariable Integer id, @RequestParam("foto") MultipartFile foto) {
-	    try (InputStream inputStream = foto.getInputStream()) {
-	        usuarioService.salvarFoto(id, inputStream);
-	        return ResponseEntity.ok().build();
-	    } catch (IOException e) {
-	        return ResponseEntity.badRequest().build();
-	    }
+
+	@PostMapping("/{id}/imagem")
+	public ResponseEntity<UsuarioModel> uploadUserImage(@PathVariable Integer id,
+			@RequestParam("fotoUsuario") MultipartFile fotoUsuario) throws IOException {
+		UsuarioModel usuario = usuarioService.saveUserImage(id, fotoUsuario);
+		return ResponseEntity.ok(usuario);
 	}
-
-    
-
-    @GetMapping("/{id}/foto")
-    public ResponseEntity<byte[]> recuperarFoto(@PathVariable Integer id) {
-        byte[] foto = usuarioService.recuperarFoto(id);
-        if (foto != null) {
-            return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(foto);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
 }
