@@ -3,6 +3,7 @@ package org.pitang.gerencia_carros.model;
 import java.io.Serializable;
 import java.sql.Date;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -56,7 +57,7 @@ public class UsuarioModel implements Serializable {
 	@Column(nullable = false)
 	private String telefone;
 	
-	@Null
+	@Nullable
 	@Column(name = "foto_path")
     private String fotoPath;
 	

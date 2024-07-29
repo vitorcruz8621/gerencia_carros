@@ -1,6 +1,5 @@
 package org.pitang.gerencia_carros.controller;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -151,9 +150,9 @@ public class UsuarioController {
 		throw new RegisterNotFoundException();
 	}
 
-	@PostMapping("/{id}/imagem")
-	public ResponseEntity<UsuarioModel> uploadUserImage(@PathVariable Integer id,
-			@RequestParam("fotoUsuario") MultipartFile fotoUsuario) throws IOException {
+	@PutMapping("/{id}/imagem")
+	public ResponseEntity<UsuarioModel> uploadUserImage(@PathVariable Integer id, @RequestParam("fotoUsuario") MultipartFile fotoUsuario)
+			throws Exception {
 		UsuarioModel usuario = usuarioService.saveUserImage(id, fotoUsuario);
 		return ResponseEntity.ok(usuario);
 	}
